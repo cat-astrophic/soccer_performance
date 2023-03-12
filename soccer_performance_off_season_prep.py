@@ -7,8 +7,7 @@ from ast import literal_eval
 
 # Project directory
 
-username = ''
-direc = 'C:/Users/' + username + '/Documents/Data/soccer_performance/'
+direc = 'F:/soccer_performance/'
 
 # Read in the data
 
@@ -67,203 +66,209 @@ euro = pd.Series(euro, name = 'European Play')
 
 data = pd.concat([data, cl0, cl1, el0, el1, cl, el, euro], axis = 1)
 ref_data = data
-data = data[data.Season < 2022].reset_index(drop = True)
 
-# Calculate outcome variables
+# Loop through time windows and calculate the outcome variables
 
-change_in_place = []
-change_in_points = []
-change_in_wins = []
-change_in_draws = []
-change_in_losses = []
-change_in_scored = []
-change_in_allowed = []
-change_in_diff = []
-change_in_cl = []
-change_in_el = []
-change_in_euro = []
-
-for i in range(len(data)):
+for z in range(1,9):
     
-    print('Calculating outcomes for observation ' + str(i+1) + ' of ' + str(len(data)) + '.......')
+    seasons = seasons[:-1]
+    data = data[data.Season < max(data.Season)].reset_index(drop = True)
     
-    tmp = ref_data[ref_data.League == data.League[i]]
-    tmp = tmp[tmp.Season == data.Season[i] + 1]
-    tmp = tmp[tmp.Team == data.Team[i]].reset_index(drop = True)
+    change_in_place = []
+    change_in_points = []
+    change_in_wins = []
+    change_in_draws = []
+    change_in_losses = []
+    change_in_scored = []
+    change_in_allowed = []
+    change_in_diff = []
+    change_in_cl = []
+    change_in_el = []
+    change_in_euro = []
     
-    try:
+    for i in range(len(data)):
         
-        change_in_place.append(tmp.Place[0] - data.Place[i])
-        change_in_points.append(tmp.Points[0] - data.Points[i])
-        change_in_wins.append(tmp.Wins[0] - data.Wins[i])
-        change_in_draws.append(tmp.Draws[0] - data.Draws[i])
-        change_in_losses.append(tmp.Losses[0] - data.Losses[i])
-        change_in_scored.append(tmp.Goals_For[0] - data.Goals_For[i])
-        change_in_allowed.append(tmp.Goals_Allowed[0] - data.Goals_Allowed[i])
-        change_in_diff.append(tmp.Goal_Difference[0] - data.Goal_Difference[i])
-        change_in_cl.append(tmp['Champions League'][0] - data['Champions League'][i])
-        change_in_el.append(tmp['Europa League'][0] - data['Europa League'][i])
-        change_in_euro.append(tmp['European Play'][0] - data['European Play'][i])
+        print('Time window ' + str(z) + ' of 8 :: Calculating outcomes for observation ' + str(i+1) + ' of ' + str(len(data)) + '.......')
         
-    except:
+        tmp = ref_data[ref_data.League == data.League[i]]
+        tmp = tmp[tmp.Season == data.Season[i] + z]
+        tmp = tmp[tmp.Team == data.Team[i]].reset_index(drop = True)
         
-        change_in_place.append(None)
-        change_in_points.append(None)
-        change_in_wins.append(None)
-        change_in_draws.append(None)
-        change_in_losses.append(None)
-        change_in_scored.append(None)
-        change_in_allowed.append(None)
-        change_in_diff.append(None)
-        change_in_cl.append(None)
-        change_in_el.append(None)
-        change_in_euro.append(None)
-        
-# Add outcome variables to the dataframe
-
-change_in_place = pd.Series(change_in_place, name = 'Change in Place')
-change_in_points = pd.Series(change_in_points, name = 'Change in Points')
-change_in_wins = pd.Series(change_in_wins, name = 'Change in Wins')
-change_in_draws = pd.Series(change_in_draws, name = 'Change in Draws')
-change_in_losses = pd.Series(change_in_losses, name = 'Change in Losses')
-change_in_scored = pd.Series(change_in_scored, name = 'Change in Goals Scored')
-change_in_allowed = pd.Series(change_in_allowed, name = 'Change in Goals Allowed')
-change_in_diff = pd.Series(change_in_diff, name = 'Change in Goal Differential')
-change_in_cl = pd.Series(change_in_cl, name = 'Change in Champions League')
-change_in_el = pd.Series(change_in_el, name = 'Change in Europa League')
-change_in_euro = pd.Series(change_in_euro, name = 'Change in European Play')
-
-data = pd.concat([data, change_in_place, change_in_points, change_in_wins, change_in_draws,
-                  change_in_losses, change_in_scored, change_in_allowed, change_in_diff,
-                  change_in_cl, change_in_el, change_in_euro], axis = 1)
-
-# Define the sample
-
-windows = [x for x in range(1,9)]
-window_list = []
-league_list = []
-season_list = []
-cutoff_list = []
-treated_lists = []
-control_lists = []
-treated_teams = []
-control_teams = []
-
-def cutofffinder(small_df):
-    
-    cont = True
-    idx = 0
-    
-    while cont == True:
-        
-        if small_df['European Play'][idx+1] == 0:
+        try:
             
-            cont = False
+            change_in_place.append(tmp.Place[0] - data.Place[i])
+            change_in_points.append(tmp.Points[0] - data.Points[i])
+            change_in_wins.append(tmp.Wins[0] - data.Wins[i])
+            change_in_draws.append(tmp.Draws[0] - data.Draws[i])
+            change_in_losses.append(tmp.Losses[0] - data.Losses[i])
+            change_in_scored.append(tmp.Goals_For[0] - data.Goals_For[i])
+            change_in_allowed.append(tmp.Goals_Allowed[0] - data.Goals_Allowed[i])
+            change_in_diff.append(tmp.Goal_Difference[0] - data.Goal_Difference[i])
+            change_in_cl.append(tmp['Champions League'][0] - data['Champions League'][i])
+            change_in_el.append(tmp['Europa League'][0] - data['Europa League'][i])
+            change_in_euro.append(tmp['European Play'][0] - data['European Play'][i])
             
-        else:
+        except:
             
-            idx += 1
+            change_in_place.append(None)
+            change_in_points.append(None)
+            change_in_wins.append(None)
+            change_in_draws.append(None)
+            change_in_losses.append(None)
+            change_in_scored.append(None)
+            change_in_allowed.append(None)
+            change_in_diff.append(None)
+            change_in_cl.append(None)
+            change_in_el.append(None)
+            change_in_euro.append(None)
+            
+    # Add outcome variables to the dataframe
     
-    return idx
-
-for w in windows:
+    change_in_place = pd.Series(change_in_place, name = 'Change in Place')
+    change_in_points = pd.Series(change_in_points, name = 'Change in Points')
+    change_in_wins = pd.Series(change_in_wins, name = 'Change in Wins')
+    change_in_draws = pd.Series(change_in_draws, name = 'Change in Draws')
+    change_in_losses = pd.Series(change_in_losses, name = 'Change in Losses')
+    change_in_scored = pd.Series(change_in_scored, name = 'Change in Goals Scored')
+    change_in_allowed = pd.Series(change_in_allowed, name = 'Change in Goals Allowed')
+    change_in_diff = pd.Series(change_in_diff, name = 'Change in Goal Differential')
+    change_in_cl = pd.Series(change_in_cl, name = 'Change in Champions League')
+    change_in_el = pd.Series(change_in_el, name = 'Change in Europa League')
+    change_in_euro = pd.Series(change_in_euro, name = 'Change in European Play')
     
-    for l in leagues:
-        
-        tmp = data[data.League == l]
-        
-        for s in seasons[:-1]:
-            
-            print('Season  - ' + str(s) + ' :: League - ' + l + ' :: Window - ' + str(w) + '.......')
-            
-            tmps = tmp[tmp.Season == s].reset_index(drop = True)
-            cutoff = cutofffinder(tmps) # last team to qualify from place in table
-            cutoff_list.append(cutoff)
-            
-            tmp_in = tmps[tmps.Points >= tmps.Points[cutoff]]
-            tmp_out = tmps[tmps.Points < tmps.Points[cutoff]]
-            tmp_in = tmp_in[tmp_in.Points <= tmps.Points[cutoff] + w]
-            tmp_out = tmp_out[tmp_out.Points >= tmps.Points[cutoff] - w]
-            
-            treated_lists.append(list(tmp_in.Place))
-            control_lists.append(list(tmp_out.Place))
-            window_list.append(w)
-            league_list.append(l)
-            season_list.append(s)
-            treated_teams.append(list(tmp_in.Team))
-            control_teams.append(list(tmp_out.Team))
-
-# Make a dataframe for the final samples
-
-windows_ = []
-leagues_ = []
-seasons_ = []
-cutoffs_ = []
-treated_ = []
-control_ = []
-places_ = []
-teams_ = []
-
-for t in range(len(treated_lists)):
+    data = pd.concat([data, change_in_place, change_in_points, change_in_wins, change_in_draws,
+                      change_in_losses, change_in_scored, change_in_allowed, change_in_diff,
+                      change_in_cl, change_in_el, change_in_euro], axis = 1)
     
-    for p in range(len(treated_lists[t])):
-        
-        windows_.append(window_list[t])
-        leagues_.append(league_list[t])
-        seasons_.append(season_list[t])
-        cutoffs_.append(cutoff_list[t])
-        treated_.append(1)
-        control_.append(0)
-        places_.append(treated_lists[t][p])
-        teams_.append(treated_teams[t][p])
-        
-for t in range(len(control_lists)):
+    # Define the sample
     
-    for p in range(len(control_lists[t])):
-        
-        windows_.append(window_list[t])
-        leagues_.append(league_list[t])
-        seasons_.append(season_list[t])
-        cutoffs_.append(cutoff_list[t])
-        treated_.append(0)
-        control_.append(1)
-        places_.append(control_lists[t][p])
-        teams_.append(control_teams[t][p])
-
-windows_ = pd.Series(windows_, name = 'Window')
-leagues_ = pd.Series(leagues_, name = 'League')
-seasons_ = pd.Series(seasons_, name = 'Season')
-cutoffs_ = pd.Series(cutoffs_, name = 'Cutoff')
-treated_ = pd.Series(treated_, name = 'Treated')
-control_ = pd.Series(control_, name = 'Control')
-places_ = pd.Series(places_, name = 'Place')
-teams_ = pd.Series(teams_, name = 'Team')
-
-sample_df = pd.concat([windows_, leagues_, seasons_, cutoffs_, treated_, control_, places_, teams_], axis = 1)
-
-# Make sure the control group does not include any of the weird cases where a non-standard entrant to European play occurred
-
-drops = []
-
-for i in range(len(sample_df)):
+    windows = [x for x in range(1,9)]
+    window_list = []
+    league_list = []
+    season_list = []
+    cutoff_list = []
+    treated_lists = []
+    control_lists = []
+    treated_teams = []
+    control_teams = []
     
-    if sample_df.Treated[i] == 0:
+    def cutofffinder(small_df):
         
-        tmp = data[data.League == sample_df.League[i]]
-        tmp = tmp[tmp.Team == sample_df.Team[i]]
-        tmp = tmp[tmp.Season == sample_df.Season[i]].reset_index(drop = True)
+        cont = True
+        idx = 0
         
-        if tmp['European Play'][0] == 1:
+        while cont == True:
             
-            drops.append(i)
-
-sample_df = sample_df[~sample_df.index.isin(drops)].reset_index(drop = True)
-
-# Merge data frames
-
-merged_df = pd.merge(sample_df, data, how = 'inner', on = ['League', 'Season', 'Team'])
-
-# Save to file
-
-merged_df.to_csv(direc + 'data/data.csv')
+            if small_df['European Play'][idx+1] == 0:
+                
+                cont = False
+                
+            else:
+                
+                idx += 1
+        
+        return idx
+    
+    for w in windows:
+        
+        for l in leagues:
+            
+            tmp = data[data.League == l]
+            
+            for s in seasons:
+                
+                print('Time window ' + str(z) + ' of 8 :: Season - ' + str(s) + ' :: League - ' + l + ' :: Window - ' + str(w) + '.......')
+                
+                tmps = tmp[tmp.Season == s].reset_index(drop = True)
+                cutoff = cutofffinder(tmps) # last team to qualify from place in table
+                cutoff_list.append(cutoff)
+                
+                tmp_in = tmps[tmps.Points >= tmps.Points[cutoff]]
+                tmp_out = tmps[tmps.Points < tmps.Points[cutoff]]
+                tmp_in = tmp_in[tmp_in.Points <= tmps.Points[cutoff] + w]
+                tmp_out = tmp_out[tmp_out.Points >= tmps.Points[cutoff] - w]
+                
+                treated_lists.append(list(tmp_in.Place))
+                control_lists.append(list(tmp_out.Place))
+                window_list.append(w)
+                league_list.append(l)
+                season_list.append(s)
+                treated_teams.append(list(tmp_in.Team))
+                control_teams.append(list(tmp_out.Team))
+    
+    # Make a dataframe for the final samples
+    
+    windows_ = []
+    leagues_ = []
+    seasons_ = []
+    cutoffs_ = []
+    treated_ = []
+    control_ = []
+    places_ = []
+    teams_ = []
+    
+    for t in range(len(treated_lists)):
+        
+        for p in range(len(treated_lists[t])):
+            
+            windows_.append(window_list[t])
+            leagues_.append(league_list[t])
+            seasons_.append(season_list[t])
+            cutoffs_.append(cutoff_list[t])
+            treated_.append(1)
+            control_.append(0)
+            places_.append(treated_lists[t][p])
+            teams_.append(treated_teams[t][p])
+            
+    for t in range(len(control_lists)):
+        
+        for p in range(len(control_lists[t])):
+            
+            windows_.append(window_list[t])
+            leagues_.append(league_list[t])
+            seasons_.append(season_list[t])
+            cutoffs_.append(cutoff_list[t])
+            treated_.append(0)
+            control_.append(1)
+            places_.append(control_lists[t][p])
+            teams_.append(control_teams[t][p])
+    
+    windows_ = pd.Series(windows_, name = 'Window')
+    leagues_ = pd.Series(leagues_, name = 'League')
+    seasons_ = pd.Series(seasons_, name = 'Season')
+    cutoffs_ = pd.Series(cutoffs_, name = 'Cutoff')
+    treated_ = pd.Series(treated_, name = 'Treated')
+    control_ = pd.Series(control_, name = 'Control')
+    places_ = pd.Series(places_, name = 'Place')
+    teams_ = pd.Series(teams_, name = 'Team')
+    
+    sample_df = pd.concat([windows_, leagues_, seasons_, cutoffs_, treated_, control_, places_, teams_], axis = 1)
+    
+    # Make sure the control group does not include any of the weird cases where a non-standard entrant to European play occurred
+    
+    drops = []
+    
+    for i in range(len(sample_df)):
+        
+        if sample_df.Treated[i] == 0:
+            
+            tmp = data[data.League == sample_df.League[i]]
+            tmp = tmp[tmp.Team == sample_df.Team[i]]
+            tmp = tmp[tmp.Season == sample_df.Season[i]].reset_index(drop = True)
+            
+            if tmp['European Play'][0] == 1:
+                
+                drops.append(i)
+    
+    sample_df = sample_df[~sample_df.index.isin(drops)].reset_index(drop = True)
+    
+    # Merge data frames
+    
+    merged_df = pd.merge(sample_df, data, how = 'inner', on = ['League', 'Season', 'Team'])
+    merged_df = merged_df.rename(columns = {'Place_x':'Place'})
+    merged_df = merged_df.drop(['Place_y'], axis = 1)
+    
+    # Save to file
+    
+    merged_df.to_csv(direc + 'data/data_' + str(z) + '_.csv', index = False)
 
