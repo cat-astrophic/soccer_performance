@@ -7,12 +7,45 @@ from ast import literal_eval
 
 # Project directory
 
-direc = 'F:/soccer_performance/'
+direc = 'F:/soccer_performance'
 
 # Read in the data
 
 qualifiers = pd.read_csv(direc + 'data/qualifiers.csv')
 data = pd.read_csv(direc + 'data/raw_data.csv')
+
+# Defining a function for finding cutoffs
+
+def cutofffinder(small_df):
+    
+    cont = True
+    idx = 0
+    
+    while cont == True:
+        
+        if small_df['European Play'][idx+1] == 0:
+            
+            cont = False
+            
+        else:
+            
+            idx += 1
+    
+    return idx
+
+# Defining a function for the merge
+
+def merger(input_df):
+    
+    c_names = list(input_df.columns[[range(len(input_df.columns)-11,len(input_df.columns))]])
+    output_df = input_df[input_df.columns[[x for x in range(22)]]]
+    
+    for var in range(len(c_names)):
+        
+        new_col = pd.Series(input_df.iloc[:,len(input_df.columns)-11+var], name = c_names[var])
+        output_df = pd.concat([output_df, new_col], axis = 1)
+        
+    return output_df
 
 # Initializing data storage
 
@@ -152,23 +185,6 @@ for z in range(1,9):
     treated_teams = []
     control_teams = []
     
-    def cutofffinder(small_df):
-        
-        cont = True
-        idx = 0
-        
-        while cont == True:
-            
-            if small_df['European Play'][idx+1] == 0:
-                
-                cont = False
-                
-            else:
-                
-                idx += 1
-        
-        return idx
-    
     for w in windows:
         
         for l in leagues:
@@ -267,6 +283,7 @@ for z in range(1,9):
     merged_df = pd.merge(sample_df, data, how = 'inner', on = ['League', 'Season', 'Team'])
     merged_df = merged_df.rename(columns = {'Place_x':'Place'})
     merged_df = merged_df.drop(['Place_y'], axis = 1)
+    merged_df = merger(merged_df)
     
     # Save to file
     
