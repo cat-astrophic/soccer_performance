@@ -7,7 +7,7 @@ from ast import literal_eval
 
 # Project directory
 
-direc = 'F:/soccer_performance'
+direc = 'F:/soccer_performance/'
 
 # Read in the data
 
@@ -32,20 +32,6 @@ def cutofffinder(small_df):
             idx += 1
     
     return idx
-
-# Defining a function for the merge
-
-def merger(input_df):
-    
-    c_names = list(input_df.columns[[range(len(input_df.columns)-11,len(input_df.columns))]])
-    output_df = input_df[input_df.columns[[x for x in range(22)]]]
-    
-    for var in range(len(c_names)):
-        
-        new_col = pd.Series(input_df.iloc[:,len(input_df.columns)-11+var], name = c_names[var])
-        output_df = pd.concat([output_df, new_col], axis = 1)
-        
-    return output_df
 
 # Initializing data storage
 
@@ -119,6 +105,32 @@ for z in range(1,9):
     change_in_el = []
     change_in_euro = []
     
+    level_in_place = []
+    level_in_points = []
+    level_in_wins = []
+    level_in_draws = []
+    level_in_losses = []
+    level_in_scored = []
+    level_in_allowed = []
+    level_in_diff = []
+    level_in_cl = []
+    level_in_el = []
+    level_in_euro = []
+    
+    lag_in_place = []
+    lag_in_points = []
+    lag_in_wins = []
+    lag_in_draws = []
+    lag_in_losses = []
+    lag_in_scored = []
+    lag_in_allowed = []
+    lag_in_diff = []
+    lag_in_cl = []
+    lag_in_el = []
+    lag_in_euro = []
+    
+    top_flight = []
+    
     for i in range(len(data)):
         
         print('Time window ' + str(z) + ' of 8 :: Calculating outcomes for observation ' + str(i+1) + ' of ' + str(len(data)) + '.......')
@@ -141,6 +153,32 @@ for z in range(1,9):
             change_in_el.append(tmp['Europa League'][0] - data['Europa League'][i])
             change_in_euro.append(tmp['European Play'][0] - data['European Play'][i])
             
+            level_in_place.append(tmp.Place[0])
+            level_in_points.append(tmp.Points[0])
+            level_in_wins.append(tmp.Wins[0])
+            level_in_draws.append(tmp.Draws[0])
+            level_in_losses.append(tmp.Losses[0])
+            level_in_scored.append(tmp.Goals_For[0])
+            level_in_allowed.append(tmp.Goals_Allowed[0])
+            level_in_diff.append(tmp.Goal_Difference[0])
+            level_in_cl.append(tmp['Champions League'][0])
+            level_in_el.append(tmp['Europa League'][0])
+            level_in_euro.append(tmp['European Play'][0])
+            
+            lag_in_place.append(data.Place[i])
+            lag_in_points.append(data.Points[i])
+            lag_in_wins.append(data.Wins[i])
+            lag_in_draws.append(data.Draws[i])
+            lag_in_losses.append(data.Losses[i])
+            lag_in_scored.append(data.Goals_For[i])
+            lag_in_allowed.append(data.Goals_Allowed[i])
+            lag_in_diff.append(data.Goal_Difference[i])
+            lag_in_cl.append(data['Champions League'][i])
+            lag_in_el.append(data['Europa League'][i])
+            lag_in_euro.append(data['European Play'][i])
+            
+            top_flight.append(1)
+            
         except:
             
             change_in_place.append(None)
@@ -154,6 +192,32 @@ for z in range(1,9):
             change_in_cl.append(None)
             change_in_el.append(None)
             change_in_euro.append(None)
+            
+            level_in_place.append(None)
+            level_in_points.append(None)
+            level_in_wins.append(None)
+            level_in_draws.append(None)
+            level_in_losses.append(None)
+            level_in_scored.append(None)
+            level_in_allowed.append(None)
+            level_in_diff.append(None)
+            level_in_cl.append(None)
+            level_in_el.append(None)
+            level_in_euro.append(None)
+            
+            lag_in_place.append(None)
+            lag_in_points.append(None)
+            lag_in_wins.append(None)
+            lag_in_draws.append(None)
+            lag_in_losses.append(None)
+            lag_in_scored.append(None)
+            lag_in_allowed.append(None)
+            lag_in_diff.append(None)
+            lag_in_cl.append(None)
+            lag_in_el.append(None)
+            lag_in_euro.append(None)
+            
+            top_flight.append(0)
             
     # Add outcome variables to the dataframe
     
@@ -169,9 +233,40 @@ for z in range(1,9):
     change_in_el = pd.Series(change_in_el, name = 'Change in Europa League')
     change_in_euro = pd.Series(change_in_euro, name = 'Change in European Play')
     
-    data = pd.concat([data, change_in_place, change_in_points, change_in_wins, change_in_draws,
-                      change_in_losses, change_in_scored, change_in_allowed, change_in_diff,
-                      change_in_cl, change_in_el, change_in_euro], axis = 1)
+    level_in_place = pd.Series(level_in_place, name = 'Place - Final')
+    level_in_points = pd.Series(level_in_points, name = 'Points - Final')
+    level_in_wins = pd.Series(level_in_wins, name = 'Wins - Final')
+    level_in_draws = pd.Series(level_in_draws, name = 'Draws - Final')
+    level_in_losses = pd.Series(level_in_losses, name = 'Losses - Final')
+    level_in_scored = pd.Series(level_in_scored, name = 'Goals Scored - Final')
+    level_in_allowed = pd.Series(level_in_allowed, name = 'Goals Allowed - Final')
+    level_in_diff = pd.Series(level_in_diff, name = 'Goal Differential - Final')
+    level_in_cl = pd.Series(level_in_cl, name = 'Champions League - Final')
+    level_in_el = pd.Series(level_in_el, name = 'Europa League - Final')
+    level_in_euro = pd.Series(level_in_euro, name = 'European Play - Final')
+    
+    lag_in_place = pd.Series(lag_in_place, name = 'Place - Initial')
+    lag_in_points = pd.Series(lag_in_points, name = 'Points - Initial')
+    lag_in_wins = pd.Series(lag_in_wins, name = 'Wins - Initial')
+    lag_in_draws = pd.Series(lag_in_draws, name = 'Draws - Initial')
+    lag_in_losses = pd.Series(lag_in_losses, name = 'Losses - Initial')
+    lag_in_scored = pd.Series(lag_in_scored, name = 'Goals Scored - Initial')
+    lag_in_allowed = pd.Series(lag_in_allowed, name = 'Goals Allowed - Initial')
+    lag_in_diff = pd.Series(lag_in_diff, name = 'Goal Differential - Initial')
+    lag_in_cl = pd.Series(lag_in_cl, name = 'Champions League - Initial')
+    lag_in_el = pd.Series(lag_in_el, name = 'Europa League - Initial')
+    lag_in_euro = pd.Series(lag_in_euro, name = 'European Play - Initial')
+    
+    top_flight = pd.Series(top_flight, name = 'Top Flight')
+    
+    data_x = pd.concat([data, change_in_place, change_in_points, change_in_wins, change_in_draws,
+                        change_in_losses, change_in_scored, change_in_allowed, change_in_diff,
+                        change_in_cl, change_in_el, change_in_euro, level_in_place, level_in_points,
+                        level_in_wins, level_in_draws, level_in_losses, level_in_scored,
+                        level_in_allowed, level_in_diff, level_in_cl, level_in_el, level_in_euro,
+                        lag_in_place, lag_in_points, lag_in_wins, lag_in_draws, lag_in_losses,
+                        lag_in_scored, lag_in_allowed, lag_in_diff, lag_in_cl, lag_in_el,
+                        lag_in_euro, top_flight], axis = 1)
     
     # Define the sample
     
@@ -189,7 +284,7 @@ for z in range(1,9):
         
         for l in leagues:
             
-            tmp = data[data.League == l]
+            tmp = data_x[data_x.League == l]
             
             for s in seasons:
                 
@@ -268,7 +363,7 @@ for z in range(1,9):
         
         if sample_df.Treated[i] == 0:
             
-            tmp = data[data.League == sample_df.League[i]]
+            tmp = data_x[data_x.League == sample_df.League[i]]
             tmp = tmp[tmp.Team == sample_df.Team[i]]
             tmp = tmp[tmp.Season == sample_df.Season[i]].reset_index(drop = True)
             
@@ -280,10 +375,9 @@ for z in range(1,9):
     
     # Merge data frames
     
-    merged_df = pd.merge(sample_df, data, how = 'inner', on = ['League', 'Season', 'Team'])
+    merged_df = pd.merge(sample_df, data_x, how = 'inner', on = ['League', 'Season', 'Team'])
     merged_df = merged_df.rename(columns = {'Place_x':'Place'})
     merged_df = merged_df.drop(['Place_y'], axis = 1)
-    merged_df = merger(merged_df)
     
     # Save to file
     
