@@ -8,8 +8,7 @@ import pandas as pd
 
 # Project directory
 
-username = ''
-direc = 'C:/Users/' + username + '/Documents/Data/soccer_performance/'
+direc = 'F:/soccer_performance/'
 
 # Defining the url components
 
