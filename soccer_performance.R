@@ -280,7 +280,7 @@ for (time.frame in 1:8) {
   
   # Longitudinal plots of change in outcomes over time
   
-  cep <- c(cep.w1[1], cep.w3[1], cep.w3[1], cep.w4[1], cep.w5[1], cep.w6[1], cep.w7[1], cep.w8[1])
+  cep <- c(cep.w1[1], cep.w2[1], cep.w3[1], cep.w4[1], cep.w5[1], cep.w6[1], cep.w7[1], cep.w8[1])
   cpl <- c(cpl.w1[1], cpl.w2[1], cpl.w3[1], cpl.w4[1], cpl.w5[1], cpl.w6[1], cpl.w7[1], cpl.w8[1])
   cpo <- c(cpo.w1[1], cpo.w2[1], cpo.w3[1], cpo.w4[1], cpo.w5[1], cpo.w6[1], cpo.w7[1], cpo.w8[1])
   cw <- c(cw.w1[1], cw.w2[1], cw.w3[1], cw.w4[1], cw.w5[1], cw.w6[1], cw.w7[1], cw.w8[1])
